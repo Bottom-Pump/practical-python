@@ -7,9 +7,12 @@ def portfolio_cost(filename):
     headers = next(f)
     for line in f:
         row = line.split(',')
-        shares = int(row[1])
-        price = float(row[2].strip())
-        sum += shares * price
+        try:
+            shares = int(row[1])
+            price = float(row[2].strip())
+            sum += shares * price
+        except ValueError as e:
+            print(f'Warning: Skip invalid lines [{line.strip()}]:{e}')
     # print(f'Total cost {sum}')
     f.close()
     return sum
