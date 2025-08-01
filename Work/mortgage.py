@@ -13,7 +13,7 @@ months = 0
 while principal > 0:
     months = months + 1
     if(principal < payment):
-        print(months,total_paid+principal,0)
+        print(f'{months}\t{total_paid+principal}\t0')
         break
     principal = principal * (1 + rate/12) - payment
     total_paid = total_paid + payment
@@ -22,7 +22,7 @@ while principal > 0:
         principal -= 1000
         total_paid += 1000
         
-    print(months,total_paid,principal)
+    print(f'{months}\t{total_paid}\t{principal}')
 
-print('Total paid', total_paid)
-print('months',months)
+print(f'Total paid:\t{total_paid}')
+print(f'months:\t\t{months}')
