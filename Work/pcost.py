@@ -1,12 +1,13 @@
 # pcost.py
 #
 # Exercise 1.27
+import csv
 def portfolio_cost(filename):
     sum = 0
     f = open(filename, 'rt')
-    headers = next(f)
-    for line in f:
-        row = line.split(',')
+    rows = csv.reader(f)
+    headers = next(rows)
+    for row in rows:
         try:
             shares = int(row[1])
             price = float(row[2].strip())
