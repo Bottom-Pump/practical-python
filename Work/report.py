@@ -45,15 +45,11 @@ def make_report(portfolio,prices):
         report.append((name,shares,price,change))
     # print a formatted table
     headers = ('Name', 'Shares', 'Price', 'Change')
-    i = len(headers)
-    while(i):
-        print('%10s' % headers[len(headers) -i],end=' ')
-        i -= 1
+    for i in headers:
+        print('%10s' % i,end=' ')
     print()
-    i = len(headers)
-    while(i):
+    for i in headers:
         print('-'*10,end=' ')
-        i -= 1
     print()
     # data
     for name, shares, price, change in report:
