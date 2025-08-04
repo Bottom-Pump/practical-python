@@ -8,13 +8,15 @@ def portfolio_cost(filename):
     f = open(filename, 'rt')
     rows = csv.reader(f)
     headers = next(rows)
-    for row in rows:
+    for rowno,row in enumerate(rows,start=2):
+        record = dict(zip(headers,row))
         try:
-            shares = int(row[1])
-            price = float(row[2].strip())
-            sum += shares * price
+            nshares = int(record['shares'])
+            price = float(record['price'])
+            sum += nshares * price
+        # This catches errors in int() and float() conversions above
         except ValueError as e:
-            print(f'Warning: Skip invalid lines {row}:{e}')
+            print(f'Row {rowno}: Bad row: {row}')
     # print(f'Total cost {sum}')
     f.close()
     return sum
