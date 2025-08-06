@@ -54,3 +54,21 @@ def portfolio_report(portfolio_filename, prices_filename):
     prices = read_prices(prices_filename)
     report = make_report(portfolio,prices)
     print_report(report)
+    
+def main(argv):
+    '''
+        Process command-line parameters and generate reports
+        usage: python report.py portfolio.csv prices.csv
+    '''
+    if len(argv) != 3:
+        print('usage : python report.py portfolio.csv prices.csv')
+        return 1
+    
+    portfolio_file = argv[1]
+    prices_file = argv[2]
+    portfolio_report(portfolio_file,prices_file)
+    return 0
+    
+if __name__ == '__main__':
+    import sys
+    main(sys.argv)
