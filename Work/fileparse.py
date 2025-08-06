@@ -1,26 +1,28 @@
 # fileparse.py
 #
-# Exercise 3.3
+# Exercise 3.6
 import csv
 
-def parse_csv(filename, select=None):
+def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=','):
     '''
     Parse a CSV file into a list of records
     '''
     with open(filename) as f:
-        rows = csv.reader(f)
+        rows = csv.reader(f,delimiter=delimiter)
         
-        # Read the file headers
-        headers = next(rows)
+        # Read the file headers if exist
+        headers = next(rows) if has_headers else None
         
         # If a column selector was given, find indices of the specified columns
         # Also narrow the set of headers used for resulting dictionaries
         if select:
+            if not has_headers:
+                raise RuntimeError("select argument requires column headers")
             indices = [headers.index(colname) for colname in select]
             headers = select
         else:
             indices = []
-        
+            
         records = []
         for row in rows:
             if not row: # Skip rows with no data
@@ -28,8 +30,17 @@ def parse_csv(filename, select=None):
             # Filter the row if specific columns were selected
             if indices:
                 row = [row[index] for index in indices]
+                
+            # Modify the type of elements if types were given
+            if types:
+                row = [func(val) for func,val in zip(types,row)]
 
-            # Make a dictionary            
-            record = dict(zip(headers,row))
-            records.append(record)
+            if has_headers:
+                # Make a dictionary            
+                record = dict(zip(headers,row))
+                records.append(record)
+            else:
+                # Make a tuple
+                record = tuple(row)
+                records.append(record)
     return records
