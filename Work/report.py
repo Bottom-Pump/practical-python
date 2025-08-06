@@ -6,10 +6,10 @@ from fileparse import parse_csv
 
 def read_portfolio(filename):
     'Open a given portfolio file and read it into a list of tuples (name,shares,price)'
-    portfolio = parse_csv(filename=filename
-                          ,select=['name','shares','price']
-                          ,types=[str,int,float])
-    
+    with open(filename) as file:
+        portfolio = parse_csv(file=file,
+                              select=['name','shares','price'],
+                              types=[str,int,float])
     return portfolio
 
 def read_prices(filename):
@@ -18,9 +18,10 @@ def read_prices(filename):
     keys: stock names
     values: prices.
     '''
-    prices = parse_csv(filename=filename
-                       ,types=[str,float]
-                       ,has_headers=False)
+    with open(filename) as file:
+        prices = parse_csv(file=file,
+                    types=[str,float],
+                    has_headers=False)
     prices = dict(prices)
     return prices
                 
