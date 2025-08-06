@@ -10,6 +10,8 @@ def read_portfolio(filename):
         rows = csv.reader(f)
         headers  = next(rows)
         for rowno,row in enumerate(rows):
+            if not row: # Skip rows with no data
+                continue
             record = dict(zip(headers,row))
             holding = {}
             try:
