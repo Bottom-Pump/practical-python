@@ -3,50 +3,55 @@
 # Exercise 3.6
 import csv
 
-def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=',',silence_errors=False):
+def parse_csv(file, select=None, types=None, has_headers=True, delimiter=',',silence_errors=False):
     '''
     Parse a CSV file into a list of records
+    usage: 
+        with gzip.open('Data/portfolio.csv.gz','rt') as file:
+            port = fileparse.parse_csv(file, types=[str,int,float])
     '''
-    with open(filename) as f:
-        rows = csv.reader(f,delimiter=delimiter)
-        
-        # Read the file headers if exist
-        headers = next(rows) if has_headers else None
-        
-        # If a column selector was given, find indices of the specified columns
-        # Also narrow the set of headers used for resulting dictionaries
-        if select:
-            if not has_headers:
-                raise RuntimeError("select argument requires column headers")
-            indices = [headers.index(colname) for colname in select]
-            headers = select
-        else:
-            indices = []
-            
-        records = []
-        for rowno,row in enumerate(rows,start=1):
-            if not row: # Skip rows with no data
-                continue
-            # Filter the row if specific columns were selected
-            if indices:
-                row = [row[index] for index in indices]
-                
-            # Modify the type of elements if types were given
-            if types:
-                try:
-                    row = [func(val) for func,val in zip(types,row)]
-                except ValueError as e:
-                    if not silence_errors:
-                        print(f'Row {rowno}: Couldn\'t convert {row}')
-                        print(f'Row {rowno}: Reason {e}')
-                    continue
+    if(type(file) == str):
+        raise RuntimeError("Usage incorrect! use help(fileparse.parse_csv) for help")
 
-            if has_headers:
-                # Make a dictionary            
-                record = dict(zip(headers,row))
-                records.append(record)
-            else:
-                # Make a tuple
-                record = tuple(row)
-                records.append(record)
+    rows = csv.reader(file,delimiter=delimiter)
+    
+    # Read the file headers if exist
+    headers = next(rows) if has_headers else None
+    
+    # If a column selector was given, find indices of the specified columns
+    # Also narrow the set of headers used for resulting dictionaries
+    if select:
+        if not has_headers:
+            raise RuntimeError("select argument requires column headers")
+        indices = [headers.index(colname) for colname in select]
+        headers = select
+    else:
+        indices = []
+        
+    records = []
+    for rowno,row in enumerate(rows,start=1):
+        if not row: # Skip rows with no data
+            continue
+        # Filter the row if specific columns were selected
+        if indices:
+            row = [row[index] for index in indices]
+            
+        # Modify the type of elements if types were given
+        if types:
+            try:
+                row = [func(val) for func,val in zip(types,row)]
+            except ValueError as e:
+                if not silence_errors:
+                    print(f'Row {rowno}: Couldn\'t convert {row}')
+                    print(f'Row {rowno}: Reason {e}')
+                continue
+
+        if has_headers:
+            # Make a dictionary            
+            record = dict(zip(headers,row))
+            records.append(record)
+        else:
+            # Make a tuple
+            record = tuple(row)
+            records.append(record)
     return records
