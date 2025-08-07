@@ -4,6 +4,7 @@
 import csv
 from fileparse import parse_csv
 import stock
+import tableformat
 
 def read_portfolio(filename):
     'Open a given portfolio file and read it into a list of tuples (name,shares,price)'
@@ -38,38 +39,41 @@ def make_report(portfolio,prices):
         report.append((name,shares,price,change))
     return report
 
-def print_report(report):
-    'print a formatted table'
+def print_report(reportdata,formatter):
+    'Print a nicely formatted table from a list of (name, shares, price, change) tuples'
     headers = ('Name', 'Shares', 'Price', 'Change')
-    for i in headers:
-        print('%10s' % i,end=' ')
-    print()
-    for i in headers:
-        print('-'*10,end=' ')
-    print()
+    # header
+    formatter.headings(['Name', 'Shares', 'Price', 'Change'])
     # data
-    for name, shares, price, change in report:
-        price_str = f"${price:.2f}"
-        print(f'{name:>10s} {shares:>10d} {price_str:>10s} {change:>10.2f}')
+    for name, shares, price, change in reportdata:
+        rowdata = [name, str(shares), f'{price:0.2f}', f'{change:0.2f}']
+        formatter.row(rowdata)
 
-def portfolio_report(portfolio_filename, prices_filename):
+def portfolio_report(portfolio_filename, prices_filename, fmt='txt'):
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
     report = make_report(portfolio,prices)
-    print_report(report)
+    # print it out
+    formatter = tableformat.create_formatter(fmt)
+    print_report(report, formatter)
     
 def main(argv):
     '''
         Process command-line parameters and generate reports
         usage: python report.py portfolio.csv prices.csv
     '''
-    if len(argv) != 3:
-        print('usage : python report.py portfolio.csv prices.csv')
+    if len(argv) < 3:
+        print('usage : python report.py portfolio.csv prices.csv (alternatve)csv')
         return 1
     
     portfolio_file = argv[1]
     prices_file = argv[2]
-    portfolio_report(portfolio_file,prices_file)
+    if len(argv) == 3:
+        portfolio_report(portfolio_file,prices_file)
+    elif len(argv) == 4:
+        fmt = argv[3]
+        portfolio_report(portfolio_file,prices_file,fmt)
+    
     return 0
     
 if __name__ == '__main__':
