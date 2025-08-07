@@ -57,24 +57,10 @@ def portfolio_report(portfolio_filename, prices_filename, fmt='txt'):
     formatter = tableformat.create_formatter(fmt)
     print_report(report, formatter)
     
-def main(argv):
-    '''
-        Process command-line parameters and generate reports
-        usage: python report.py portfolio.csv prices.csv
-    '''
-    if len(argv) < 3:
-        print('usage : python report.py portfolio.csv prices.csv (alternatve)csv')
-        return 1
-    
-    portfolio_file = argv[1]
-    prices_file = argv[2]
-    if len(argv) == 3:
-        portfolio_report(portfolio_file,prices_file)
-    elif len(argv) == 4:
-        fmt = argv[3]
-        portfolio_report(portfolio_file,prices_file,fmt)
-    
-    return 0
+def main(args):
+    if len(args) != 4:
+        raise SystemExit('Usage: %s portfile pricefile format' % args[0])
+    portfolio_report(args[1], args[2], args[3])
     
 if __name__ == '__main__':
     import sys
