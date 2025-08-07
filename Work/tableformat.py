@@ -1,4 +1,5 @@
 #tableformat.py
+import pprint
 
 class TableFormatter:
     def headings(self, headers):
@@ -53,7 +54,10 @@ class HTMLTableFormatter(TableFormatter):
         for d in rowdata:
             print(f'<td>{d}</td>', end='')
         print('</tr>')
-        
+
+class FromatError(Exception):
+    pass
+      
 def create_formatter(fmt):
     '''
     Choose output formatter
@@ -65,5 +69,15 @@ def create_formatter(fmt):
     elif fmt == 'html':
         formatter = HTMLTableFormatter()
     else:
-        raise RuntimeError(f'Unknown format {fmt}')
+        raise FromatError(f'Unknown table format {fmt}')
     return formatter
+
+def print_table(datatable,select,formatter):
+    'Print a nicely formatted table from a list of selected elements in object'
+    # header
+    formatter.headings(select)
+    # data
+    for obj in datatable:
+        rowdata = [str(getattr(obj,name)) for name in select]
+        formatter.row(rowdata)
+    
