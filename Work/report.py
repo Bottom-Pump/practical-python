@@ -5,6 +5,7 @@ import csv
 from fileparse import parse_csv
 import stock
 import tableformat
+from portfolio import Portfolio
 
 def read_portfolio(filename):
     'Open a given portfolio file and read it into a list of tuples (name,shares,price)'
@@ -13,7 +14,7 @@ def read_portfolio(filename):
                               select=['name','shares','price'],
                               types=[str,int,float])
     portfolio = [ stock.Stock(d['name'], d['shares'], d['price']) for d in portfolio]
-    return portfolio
+    return Portfolio(portfolio)
 
 def read_prices(filename):
     ''' 
